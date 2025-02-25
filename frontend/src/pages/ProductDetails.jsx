@@ -19,12 +19,26 @@ const ProductDetails = () => {
 
   if (!product) return <p className="text-center text-lg">Loading...</p>;
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!user) {
       navigate("/login"); // Redirect if user is not authenticated
-    } else {
-      setCart((prevCart) => [...prevCart, product]); // Correctly update cart state
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await API.post(
+        "/cart/add",
+        { productId: product._id, quantity: 1 },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setCart(res.data.cart); // Update cart state with backend data
       alert("Product added to cart! 🛒");
+      navigate("/cart"); // Redirect to cart after adding
+    } catch (err) {
+      console.error("Error adding to cart:", err.response?.data?.message || err.message);
     }
   };
 

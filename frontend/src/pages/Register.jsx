@@ -12,7 +12,7 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    API.post("/register", { name, email, password })
+    API.post("/users/register", { name, email, password })
       .then((res) => {
         localStorage.setItem("user", JSON.stringify(res.data));
         setUser(res.data);
