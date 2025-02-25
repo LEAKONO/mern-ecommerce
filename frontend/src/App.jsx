@@ -1,47 +1,29 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
-import Login from "./pages/Login";
-
+import AdminDashboard from "./pages/AdminDashboard";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import AdminRoute from "./routes/AdminRoute";
+import './App.css'
 function App() {
-  return (
-    <Router>
-      <Header />
-      <main className="min-h-screen p-4">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </main>
-      <Footer />
-    </Router>
-
-import { useState } from "react";
-
-import { BrowserRouter, Routes, Route } from "react-router";
-import Index from "../../front/src/pages/Index";
-import AdminDashboard from "../../front/src/pages/admin/Dashboard";
-import NotFound from "../../front/src/pages/NotFound";
-
-import "./App.css";
-
-function App() {
-  const [count, setCount] = useState(0);
-
+  console.log("App component rendered");
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
+        <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+        <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+      </Routes>
     </>
   );
 }
