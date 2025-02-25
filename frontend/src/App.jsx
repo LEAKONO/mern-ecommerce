@@ -9,7 +9,7 @@ import Cart from "./pages/Cart";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
-
+import './App.css'
 function App() {
   console.log("App component rendered");
   return (
