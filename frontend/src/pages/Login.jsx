@@ -13,24 +13,27 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await API.post("/users/login", { email, password });
-  
+
       console.log("Login Response:", res.data); // Debugging
-      if (!res.data || !res.data.user || !res.data.user.role) {
-        console.error("Error: User role not found!");
+
+      if (!res.data || !res.data.user || !res.data.token) {
+        console.error("Error: Missing user or token in response!");
         return;
       }
-  
+
+      // Store token & user data
+      localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
+
       setUser(res.data.user); // Updates global state
-  
+
       console.log("Navigating to:", res.data.user.role === "admin" ? "/admin" : "/"); // Debugging
       navigate(res.data.user.role === "admin" ? "/admin" : "/");
     } catch (err) {
-      console.error("Login failed:", err);
+      console.error("Login failed:", err.response?.data?.message || err.message);
     }
   };
-  
-  
+
   return (
     <div className="container mx-auto p-5">
       <h1 className="text-2xl font-bold">Login</h1>
@@ -41,6 +44,7 @@ const Login = () => {
           className="border p-2 w-full" 
           value={email} 
           onChange={(e) => setEmail(e.target.value)} 
+          required
         />
         <input 
           type="password" 
@@ -48,6 +52,7 @@ const Login = () => {
           className="border p-2 w-full" 
           value={password} 
           onChange={(e) => setPassword(e.target.value)} 
+          required
         />
         <button type="submit" className="bg-blue-600 text-white p-2 w-full">
           Login

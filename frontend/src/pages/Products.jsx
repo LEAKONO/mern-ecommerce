@@ -1,48 +1,45 @@
-import { useEffect, useState, useContext } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { CartContext } from "../context/CartContext";
-import { AuthContext } from "../context/AuthContext"; 
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import API from "../api";
 
-const ProductDetails = () => {
-  const { id } = useParams();
-  const { cart, setCart } = useContext(CartContext);
-  const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
-  const [product, setProduct] = useState(null);
+const Products = () => {
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    API.get(`/products/${id}`)
-      .then((res) => setProduct(res.data))
+    API.get("/products")
+      .then((res) => setProducts(res.data))
       .catch((err) => console.error(err));
-  }, [id]);
-
-  if (!product) return <p className="text-center text-lg">Loading...</p>;
-
-  const handleAddToCart = () => {
-    if (!user) {
-      navigate("/login"); // Redirect if user is not authenticated
-    } else {
-      setCart((prevCart) => [...prevCart, product]); // Correctly update cart state
-      alert("Product added to cart! 🛒");
-    }
-  };
+  }, []);
 
   return (
-    <div className="container mx-auto p-5 flex flex-col items-center">
-      <div className="border rounded-lg shadow-md p-5 max-w-md mx-auto bg-white">
-        <img src={product.image} alt={product.name} className="w-full h-64 object-cover rounded-lg"/>
-        <h1 className="text-2xl font-bold mt-3">{product.name}</h1>
-        <p className="text-gray-600 text-lg font-semibold">${product.price}</p>
-        <p className="text-sm text-gray-500 mt-2">{product.description}</p>
-        <button 
-          className="bg-green-600 hover:bg-green-700 text-white p-2 mt-3 w-full rounded-lg"
-          onClick={handleAddToCart}>
-          Add to Cart 🛒
-        </button>
+    <div className="container mx-auto px-6 pb-10">
+      <h1 className="text-3xl font-semibold text--100 mb-6 text-center">Our Products</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {products.map((product) => (
+          <div
+            key={product._id}
+            className="bg-[#1E1E1E] border border-gray-700 rounded-lg shadow-lg p-5 transition transform hover:scale-105 hover:shadow-2xl"
+          >
+            <img
+              src={product.image}
+              alt={product.title}
+              className="w-full h-40 object-cover rounded-md mb-3"
+            />
+            <h2 className="text-xl text-gray-200 font-semibold">{product.title}</h2>
+            <p className="text-gray-400 text-sm">{product.category}</p>
+            <p className="text-gray-300 text-sm truncate">{product.description}</p>
+            <p className="text-gray-400 font-bold">${product.price}</p>
+            <Link
+              to={`/products/${product._id}`}
+              className="block mt-3 text-center bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition"
+            >
+              View Details
+            </Link>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-export default ProductDetails;
+export default Products;
